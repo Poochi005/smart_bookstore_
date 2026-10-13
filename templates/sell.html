@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Sell Book - Smart Bookstore{% endblock %}
+{% block content %}
+<section>
+    <h2>Record Book Sale</h2>
+    <p><strong>{{ book.title }}</strong> by {{ book.author }}</p>
+    <p>Price: ₹{{ "%.2f"|format(book.price) }} | Available stock: {{ book.stock }}</p>
+    <form method="post">
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" min="1" max="{{ book.stock }}" required>
+        <div class="form-actions">
+            <button type="submit">Complete Sale</button>
+            <a class="button secondary" href="{{ url_for('home') }}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Smart Bookstore{% endblock %}
+{% block content %}
+    <section class="intro">
+        <h2>Welcome to Smart Bookstore</h2>
+        <p>Manage your books, track stock, record sales, and explore your inventory.</p>
+    </section>
+
+    <section class="stats">
+        <div><strong>{{ total_books }}</strong><span>Books</span></div>
+        <div><strong>{{ total_stock }}</strong><span>Total Stock</span></div>
+        <div><strong>₹{{ "%.2f"|format(total_sales) }}</strong><span>Total Sales</span></div>
+    </section>
+
+    <section class="book-list" id="books">
+        <div class="section-heading">
+            <h2>Available Books</h2>
+            <a class="button" href="{{ url_for('add_book') }}">+ Add Book</a>
+        </div>
+
+        <form class="filters" method="get" action="{{ url_for('home') }}#books">
+            <input type="search" name="q" value="{{ q }}" placeholder="Search by title or author">
+            <select name="category" aria-label="Category">
+                <option value="">All categories</option>
+                {% for c in categories %}
+                <option value="{{ c }}" {{ 'selected' if c == category }}>{{ c }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Search</button>
+            {% if q or category %}<a class="button secondary" href="{{ url_for('home') }}#books">Clear</a>{% endif %}
+        </form>
+
+        {% if books %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th><th>Author</th><th>Category</th>
+                        <th>Price</th><th>Stock</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td><strong>{{ book.title }}</strong></td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>₹{{ "%.2f"|format(book.price) }}</td>
+                        <td>{{ book.stock }}</td>
+                        <td class="actions">
+                            {% if book.stock > 0 %}
+                            <a class="small-button" href="{{ url_for('sell_book', book_id=book.id) }}">Sell</a>
+                            {% else %}
+                            <span class="out-of-stock">Out of stock</span>
+                            {% endif %}
+                            <a class="small-button secondary-btn" href="{{ url_for('edit_book', book_id=book.id) }}">Edit</a>
+                            <form method="post" action="{{ url_for('delete_book', book_id=book.id) }}"
+                                  onsubmit="return confirm('Delete this book?');">
+                                <button class="danger small-button" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p>{{ "No books match your search." if (q or category) else "No books available." }}</p>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if editing else "Add" }} Book - Smart Bookstore{% endblock %}
+{% block content %}
+<section class="add-book">
+    <h2>{{ "Edit Book" if editing else "Add a New Book" }}</h2>
+    <form method="post" action="{{ url_for('edit_book', book_id=book_id) if editing else url_for('add_book') }}">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="{{ form.title }}" required>
+
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author" value="{{ form.author }}" required>
+
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" value="{{ form.category }}">
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" min="0.01" step="0.01" value="{{ form.price }}" required>
+
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock" min="0" step="1" value="{{ form.stock }}" required>
+
+        <div class="form-actions">
+            <button type="submit">{{ "Save Changes" if editing else "Add Book" }}</button>
+            <a class="button secondary" href="{{ url_for('home') }}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
